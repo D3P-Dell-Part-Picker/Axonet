@@ -17,8 +17,8 @@ network_architecture = "mesh"
 
 
 def worker(action):  # Worker function
-    import init_server
-    import init_client
+    import src.server.init_server as init_server
+    import src.client.init_client as init_client
     global network_architecture
 
     print('action:', action)
