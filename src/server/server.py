@@ -7,18 +7,10 @@ import socket
 import struct
 import datetime
 import threading
+import src.misc.primitives as primitives
+import src.server.inject as inject
+
 from hashlib import sha3_224
-
-# Add to PATH
-sys.path.insert(0, (os.path.abspath('../inter/')))
-sys.path.insert(0, (os.path.abspath('../inter/scripts')))
-sys.path.insert(0, (os.path.abspath('../inter/modules')))
-sys.path.insert(0, (os.path.abspath('../inter/misc')))
-sys.path.insert(0, (os.path.abspath('../misc')))
-
-# Imports from PATH
-
-import primitives
 
 # Globals
 localhost = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -264,7 +256,6 @@ class Server:
 
         net_tuple = self.read_nodestate(0)
         message_list = self.read_nodestate(1)
-        do_ring_prop = False  # If true, bypass message signature check
 
         try:
             address = connection[1]
@@ -538,9 +529,6 @@ class Server:
             # Note: The injector itself (i.e inject.py) returns any address that throws a BrokenPipeError on broadcast.
             # This function returns nothing.
 
-            os.chdir(original_path)
-
-            import inject
             injector = inject.NetworkInjector()
 
             net_tuple = self.read_nodestate(0)

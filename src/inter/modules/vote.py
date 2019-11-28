@@ -2,24 +2,19 @@ import os
 import sys
 import random
 
-# Allow us to import the client
 this_dir = os.path.dirname(os.path.realpath(__file__))
 os.chdir(this_dir)
 
-sys.path.insert(0, (os.path.abspath('../../client')))
-sys.path.insert(0, (os.path.abspath('../../server')))
+import src.misc.primitives as primitives
+import src.server.inject as inject
 
-import primitives
-import client
-
-_client = client.Client()
 _primitives = primitives.Primitives('Client', 'Debug')
 
 
 def initiate(net_tuple, arguments):
     """ Called from the network injector when it receives a $vote:(reason) input"""
     os.chdir(this_dir)
-    import inject
+
     injector = inject.NetworkInjector()
     reason = arguments[0]
 
@@ -29,6 +24,9 @@ def initiate(net_tuple, arguments):
 
 def respond_start(reason, nodeState):
     """Called by the client's listener_thread when it received a vote: flag"""
+
+    from src.client.client import Client
+    _client = Client()
 
     new_nodestate = nodeState
 

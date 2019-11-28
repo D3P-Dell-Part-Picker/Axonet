@@ -1,7 +1,7 @@
 import multiprocessing
 import struct
 import os
-import server
+import src.server.server as server
 from hashlib import sha3_224
 import datetime
 import sys

@@ -1,20 +1,18 @@
 import os
 import sys
+import src.misc.primitives as primitives
 
 
 # Allow us to import the client
 this_dir = os.path.dirname(os.path.realpath(__file__))
 os.chdir(this_dir)
-sys.path.insert(0, '../../../client/')
-sys.path.insert(0, '../../../server/')
-sys.path.insert(0, (os.path.abspath('../../inter/misc')))
-import primitives
-import client
+
 message = "find:this16digittoken"
 
 
 def led_on(shelf_num):
-    shelf_num
+    pass
+    #shelf_num
     #interface led
     #RPI GPIO module
 

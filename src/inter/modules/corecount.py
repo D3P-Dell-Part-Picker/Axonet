@@ -1,20 +1,22 @@
 import os
 import sys
 import codecs
+import multiprocessing
+import secrets
 from time import sleep
+import src.server.inject as inject
+import src.client.client as client
 
 # Allow us to import the client
 this_dir = os.path.dirname(os.path.realpath(__file__))
 os.chdir(this_dir)
-sys.path.insert(0, '../../client/')
-sys.path.insert(0, '../../server/')
-import multiprocessing
-import secrets
+
+
+
 no_prop = "ffffffffffffffff"
 
 
 def initiate(in_cmd, net_tuple):
-    import inject
     injector = inject.NetworkInjector()
 
     if in_cmd == "corecount":
@@ -36,7 +38,6 @@ def initiate(in_cmd, net_tuple):
 def respond_start(page_ids, message):
     # Called when client's listener receives a "corecount" flag
 
-    import client
     Client = client.Client()
 
     page_id = message[10:]
@@ -52,7 +53,7 @@ def respond_start(page_ids, message):
 
 def start(page_id, raw_lines, newlines):
     # Called at the end of the 'sync' flag for module-specific I/O
-    import client
+
     Client = client.Client()
 
     print(page_id)
