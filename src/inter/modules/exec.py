@@ -7,7 +7,7 @@ _primitives = primitives.Primitives('Client', 'Debug')
 
 
 def initiate(message, allow_command_execution):
-    from src.client.client import Client
+    from client import client
     _client = Client()
 
     # Assuming allow_command_execution is set, execute arbitrary UNIX commands in their own threads.

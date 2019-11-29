@@ -7,8 +7,10 @@ import socket
 import struct
 import datetime
 import threading
-import src.misc.primitives as primitives
-import src.server.inject as inject
+
+
+from misc import primitives
+from server import inject
 
 from hashlib import sha3_224
 
@@ -246,7 +248,7 @@ class Server:
         temp.close()
 
         # noinspection PyProtectedMember
-        os._exit(0)
+        os._exit(0) # kill oneself with so much passion that the python devs made _exit() private
 
     def respond(self, msg, connection):
         # We received a message, reply with an appropriate response.
@@ -516,6 +518,7 @@ class Server:
                                 listener_terminated = True
                                 
                             if _terminated:
+                                # kill oneself with so much passion that the python devs made _exit() private
                                 os._exit(0)
                                 
                     except OSError:

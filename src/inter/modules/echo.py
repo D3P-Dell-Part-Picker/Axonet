@@ -7,7 +7,7 @@ os.chdir(this_dir)
 
 def initiate(net_tuple, network_architecture, conn, no_prop):
     """ Called from the network injector when it receives a $[name]: flag"""
-    from src.client.client import Client
+    from client import client
     _client = Client()
 
     if network_architecture == "complete":

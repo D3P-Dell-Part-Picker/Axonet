@@ -1,6 +1,6 @@
 import os
 import sys
-import src.misc.primitives as primitives
+from misc import primitives
 
 
 # Allow us to import the client

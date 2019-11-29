@@ -1,7 +1,7 @@
 import os
 import sys
 import secrets
-import src.server.inject as inject
+from server import inject
 
 this_dir = os.path.dirname(os.path.realpath(__file__))
 

@@ -4,14 +4,12 @@ import codecs
 import multiprocessing
 import secrets
 from time import sleep
-import src.server.inject as inject
-import src.client.client as client
+from server import inject
+from client import client
 
 # Allow us to import the client
-this_dir = os.path.dirname(os.path.realpath(__file__))
+this_dir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(this_dir)
-
-
 
 no_prop = "ffffffffffffffff"
 

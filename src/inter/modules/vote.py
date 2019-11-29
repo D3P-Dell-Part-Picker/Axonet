@@ -5,8 +5,8 @@ import random
 this_dir = os.path.dirname(os.path.realpath(__file__))
 os.chdir(this_dir)
 
-import src.misc.primitives as primitives
-import src.server.inject as inject
+from misc import primitives
+from server import inject
 
 _primitives = primitives.Primitives('Client', 'Debug')
 

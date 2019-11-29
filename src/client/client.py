@@ -9,16 +9,13 @@ import sys
 import secrets
 from time import sleep
 from hashlib import sha3_224
-import src.misc.primitives as primitives
-import src.inter.modules.echo as echo
-import src.inter.modules.exec as unix_exec
-import src.inter.modules.finder as finder
-import src.inter.modules.vote as vote
-import src.inter.modules.discover as discover
+from misc import primitives
 
-# Switch to the directory containing client.py
-this_dir = os.path.dirname(os.path.realpath(__file__))
-os.chdir(this_dir)
+from inter.modules import echo
+from inter.modules import exec as unix_exec
+from inter.modules import finder
+from inter.modules import vote
+from inter.modules import discover
 
 # Globals
 localhost = socket.socket()
@@ -37,12 +34,16 @@ no_prop = "ffffffffffffffff"  # True:[message] = No message propagation.
 ring_prop = "eeeeeeeeeeeeeeee"
 SALT = None  # Will be set to a 128-bit hexadecimal token(by self.init) for making address identifiers
 ADDR_ID = None  # Another 128-bit hexadecimal token that wil be salted with SALT, and set by init()
-original_path = os.path.dirname(os.path.realpath(__file__))
+original_path = os.getcwd()
 network_size = 0
 network_architecture = ""  # "complete" or "mesh"
 output_node = ""  # Address of one remote node from init_client
 
-os.chdir(original_path)
+# Switch to the directory containing client.py
+
+if __name__ == "__main__":
+    os.chdir(original_path)
+
 Primitives = primitives.Primitives(sub_node, log_level)
 
 
@@ -1181,7 +1182,7 @@ class Client:
         self.write_nodestate(nodeState, 3, True)  # Set terminated = True
 
         # noinspection PyProtectedMember
-        os._exit(0)  # kill oneself with passion
+        os._exit(0)  # kill oneself with so much passion that the python devs made _exit() private
 
     def initialize(self, port=3705, net_architecture="complete", remote_addresses=None, command_execution=False,
                    default_log_level="Debug", modules=None, net_size=0):

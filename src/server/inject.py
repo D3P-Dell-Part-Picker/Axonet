@@ -1,10 +1,11 @@
 import multiprocessing
 import struct
 import os
-import src.server.server as server
+from server import server
 from hashlib import sha3_224
 import datetime
 import sys
+
 original_path = os.path.dirname(os.path.realpath(__file__))
 
 sys.path.insert(0, (os.path.abspath('../inter/modules')))
