@@ -1,0 +1,9 @@
+#!/bin/sh
+mkdir python3.6
+cd python3.6
+wget https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tgz
+sudo tar zxf Python-3.6.8.tgz
+cd Python-3.6.8
+./configure
+make -j 4
+make altinstall
