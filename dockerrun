@@ -1,0 +1,4 @@
+#!/bin/sh
+docker kill client
+docker rm client
+docker run --name client alexm622/d3pmesh-client:latest
