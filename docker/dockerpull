@@ -1,0 +1,2 @@
+#!/bin/sh
+docker pull alexm622/d3pmesh-client
