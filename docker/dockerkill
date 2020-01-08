@@ -1,0 +1,2 @@
+docker kill client
+docker rm client
