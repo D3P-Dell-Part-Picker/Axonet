@@ -14,7 +14,7 @@ RUN apt install -y libxml2-dev libxslt-dev python-dev
 RUN pip3.6 install python_secrets
 RUN pwd
 RUN whoami
-
+RUN ip link show
 ADD docker/launchscript.sh .
 
 ADD src /client
