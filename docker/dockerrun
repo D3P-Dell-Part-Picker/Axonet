@@ -1,4 +1,4 @@
 #!/bin/sh
 docker kill client
 docker rm client
-docker run -it -p 3705:3705 --name client alexm622/d3pmesh-client:latest
+screen docker run -it -p 3705:3705 --name client alexm622/d3pmesh-client:latest
