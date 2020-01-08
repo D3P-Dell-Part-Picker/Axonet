@@ -10,6 +10,7 @@ RUN apt-get install -y build-essential tk-dev libncurses5-dev libncursesw5-dev l
 RUN pip3 install -r requirements.txt
 ADD docker/pyinstall .
 RUN ./pyinstall
+RUN apt install -y libxml2-dev libxslt-dev python-dev
 RUN pip3.6 install python_secrets
 RUN pwd
 RUN whoami
