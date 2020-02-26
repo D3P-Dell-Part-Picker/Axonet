@@ -942,7 +942,8 @@ class Client:
                     line_num = itemparsed([-2]).strip(' ') # Finds 2nd to last number in part tuple and removes the
                     line_number_list.append(line_num)
                     print(line_num)
-
+                sub_node = self.read_nodeConfig(3)
+                log_level = self.read_nodeConfig(2)
                 finder.respond_start(message, sub_node, log_level, line_number_list)
 
 

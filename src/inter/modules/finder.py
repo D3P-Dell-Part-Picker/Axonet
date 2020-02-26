@@ -2,7 +2,6 @@ import os
 import sys
 import time
 
-
 # Allow us to import the client
 this_dir = os.path.dirname(os.path.realpath(__file__))
 os.chdir(this_dir)
@@ -22,6 +21,11 @@ import readPartNumbers
 
 os.chdir(os.path.abspath('../../client/'))
 
+# Create the I2C interface.
+i2c = busio.I2C(board.SCL, board.SDA)
+# This creates a 7 segment 4 character display:
+display = segments.Seg7x4(i2c)
+
 
 def respond_start(message, sub_node, log_level, line_number_list):
     _primitives = primitives.Primitives(sub_node, log_level)
@@ -30,7 +34,7 @@ def respond_start(message, sub_node, log_level, line_number_list):
     print(arguments)
     line_number = arguments[0]
     print(line_number)
-    
+
     """  local_ip = _primitives.get_local_ip()
     our_parts = readPartNumbers.find_my_parts(local_ip)
     for item in our_parts:
@@ -47,14 +51,15 @@ def respond_start(message, sub_node, log_level, line_number_list):
 
 
 def display_token(token):
-    # Create the I2C interface.
-    i2c = busio.I2C(board.SCL, board.SDA)
-
-    # Create the LED segment class.
-    # This creates a 7 segment 4 character display:
-    display = segments.Seg7x4(i2c)
-
     # Clear the display.
     display.fill(0)
 
     display.print(token)
+
+
+def clear_display():
+
+    i2c = busio.I2C(board.SCL, board.SDA)
+    display = segments.Seg7x4(i2c)
+    # Clear the display.
+    display.fill(0)
