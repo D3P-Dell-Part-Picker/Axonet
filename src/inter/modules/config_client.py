@@ -43,6 +43,8 @@ def config_net_size(arguments):
     except (ValueError, TypeError):
         print("That is not a valid port")
 
+
+def config_argument(arguments, sub_node, log_level):
     _primitives = primitives.Primitives(sub_node, log_level)
     print(arguments, "there are the arguments")
     if arguments[0] == "network_size":
@@ -87,7 +89,7 @@ def config_net_size(arguments):
             print("Error \"" + arguments[1] + "\" isn't correct syntax")
 
 
-#TODO: What's going on here?
+# TODO: What's going on here?
 """
 def port(arguments):
     print("?????????????????")

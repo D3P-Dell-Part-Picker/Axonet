@@ -609,7 +609,7 @@ class Client:
                 import config_client
                 os.chdir(this_dir)
 
-                config_client.config_argument(arguments, self.read_nodeConfig(3), self.read_nodeConfig(2))
+                config_client.config_argument(arguments, self.read_nodeConfig(3), self.read_nodeConfig(2), nodeConfig)
 
             # Instruct clients to connect to remote servers.
             if message.startswith("ConnectTo:"):
