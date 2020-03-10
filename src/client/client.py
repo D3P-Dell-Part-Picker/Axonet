@@ -49,7 +49,7 @@ class Client:
     @staticmethod
     def lock(lock, name=None):
         if name and type(name) == str:
-         Primitives.log("Locking: "+name, in_log_level="Info")
+            Primitives.log("Locking: " + name, in_log_level="Info")
 
         lock.acquire()
 
@@ -82,16 +82,15 @@ class Client:
 
         global nodeState, nodeConfig
 
-
         in_nodestate[index] = value
 
         if void:
             if in_nodestate == nodeConfig:
-                print("Setting nodeConfig["+str(index)+"]"+" to "+str(value))
+                print("Setting nodeConfig[" + str(index) + "]" + " to " + str(value))
                 nodeConfig = list(in_nodestate)
 
             else:
-                print("Setting nodeState["+str(index)+"]"+" to "+str(value))
+                print("Setting nodeState[" + str(index) + "]" + " to " + str(value))
 
                 nodeState = list(in_nodestate)
 
@@ -405,9 +404,9 @@ class Client:
 
             else:
                 do_mesh_propagation = self.read_nodestate(12)
-                
-            Primitives.log("Doing mesh propagation: "+str(do_mesh_propagation), in_log_level="Debug")
-  
+
+            Primitives.log("Doing mesh propagation: " + str(do_mesh_propagation), in_log_level="Debug")
+
             # Network not bootstrapped yet, do ring network propagation
             if message[:16] != ring_prop:
                 message = ring_prop + ":" + message
@@ -494,13 +493,11 @@ class Client:
         sig = full_message[:16]  # Just the signature
         address = connection[1]
 
-
         net_tuple = self.read_nodestate(0)
         message_list = self.read_nodestate(1)
         propagation_allowed = True
         original_path = self.read_nodeConfig(6)
         os.chdir(original_path)
-
 
         if address == "127.0.0.1":
             Primitives.log("Received message from 127.0.0.1; This is a violation of protocol; "
@@ -609,7 +606,9 @@ class Client:
                 import config_client
                 os.chdir(this_dir)
 
-                config_client.config_argument(arguments, self.read_nodeConfig(3), self.read_nodeConfig(2), nodeConfig)
+                new_nodeConfig = config_client.config_argument(arguments, self.read_nodeConfig(3),
+                                                               self.read_nodeConfig(2), nodeConfig)
+                self.overwrite_nodestate(new_nodeConfig, write_nodeConfig=True)
 
             # Instruct clients to connect to remote servers.
             if message.startswith("ConnectTo:"):
@@ -880,8 +879,8 @@ class Client:
                     raw_lines = list(set(open(file_path).readlines()))
 
                     existing_lines = list(set(
-                                [raw_line for raw_line in raw_lines
-                                if raw_line != "\n" and raw_line[:2] != "##"]))
+                        [raw_line for raw_line in raw_lines
+                         if raw_line != "\n" and raw_line[:2] != "##"]))
 
                     # Write changes to page
                     open(file_path, 'w').writelines(set(existing_lines))
@@ -936,16 +935,14 @@ class Client:
                 local_ip = Primitives.get_local_ip()
                 our_parts = readPartNumbers.find_my_parts(local_ip, path_to_client=this_dir)
                 for item in our_parts:
-                  
                     print(item)
                     itemparsed = item.split(',')
-                    line_num = itemparsed([-2]).strip(' ') # Finds 2nd to last number in part tuple and removes the
+                    line_num = itemparsed([-2]).strip(' ')  # Finds 2nd to last number in part tuple and removes the
                     line_number_list.append(line_num)
                     print(line_num)
                 sub_node = self.read_nodeConfig(3)
                 log_level = self.read_nodeConfig(2)
                 finder.respond_start(message, sub_node, log_level, line_number_list)
-
 
             # Provide server's a means of communicating readiness to clients. This is used during file proxying
             # to form a feedback loop between the proxy and client, that way the client doesn't ever exceed the
@@ -1051,8 +1048,8 @@ class Client:
 
                     this_campaign_list = list(set(this_campaign_list))  # Remove any duplicate entries
 
-                    Primitives.log(str(len(this_campaign_list)) + " nodes have cast votes for "+election_details[0])
-                    Primitives.log("Network size: "+str(self.read_nodeConfig(7)))
+                    Primitives.log(str(len(this_campaign_list)) + " nodes have cast votes for " + election_details[0])
+                    Primitives.log("Network size: " + str(self.read_nodeConfig(7)))
 
                     # If all votes are cast, elect a leader.
                     network_size = self.read_nodeConfig(7)
@@ -1062,7 +1059,6 @@ class Client:
 
                         campaign_tokens = [campaign_tuple[1] for campaign_tuple in campaign_list
                                            if campaign_tuple[0] == reason]
-
 
                         winning_token = max(campaign_tokens)
 
@@ -1136,7 +1132,7 @@ class Client:
                     self.write_nodestate(nodeState, 10, False)  # Set ongoing_election = False
 
                     is_cluster_rep = (new_leader == Primitives.get_local_ip())
-                    print("is_cluster_rep: "+str(is_cluster_rep))
+                    print("is_cluster_rep: " + str(is_cluster_rep))
 
                     Primitives.log(str(new_election_list), in_log_level="Debug")
 
@@ -1330,7 +1326,7 @@ class Client:
         global nodeConfig
         global Primitives
 
-        SALT = secrets.token_hex(16) # Generate SALT
+        SALT = secrets.token_hex(16)  # Generate SALT
 
         # nodeConfig assignments
         self.write_nodeConfig(nodeConfig, 0, port)
@@ -1340,11 +1336,11 @@ class Client:
         # nodeConfig[3] isn't user configurable
         Primitives = primitives.Primitives(self.read_nodeConfig(3), self.read_nodeConfig(2))
         self.write_nodeConfig(nodeConfig, 4, SALT)
-        self.write_nodeConfig(nodeConfig, 5, Primitives.gen_addr_id(SALT)) # Generate ADDR_ID
+        self.write_nodeConfig(nodeConfig, 5, Primitives.gen_addr_id(SALT))  # Generate ADDR_ID
         # nodeConfig[6] isn't user configurable
         self.write_nodeConfig(nodeConfig, 7, net_size)
         self.write_nodeConfig(nodeConfig, 8, net_architecture)
-        self.write_nodeConfig(nodeConfig, 9, None) # We'll reset this shortly if needed
+        self.write_nodeConfig(nodeConfig, 9, None)  # We'll reset this shortly if needed
         self.write_nodeConfig(nodeConfig, 10, input_directory_server)
         # nodeConfig[11] is magic; don't touch
 

@@ -9,6 +9,7 @@ sys.path.insert(0, '../../../client/')
 sys.path.insert(0, '../../../server/')
 sys.path.insert(0, (os.path.abspath('../../inter/misc')))
 import primitives
+import client
 
 
 def change_port(arguments):
@@ -44,7 +45,7 @@ def config_net_size(arguments):
         print("That is not a valid port")
 
 
-def config_argument(arguments, sub_node, log_level):
+def config_argument(arguments, sub_node, log_level, nodeConfig):
     _primitives = primitives.Primitives(sub_node, log_level)
     print(arguments, "there are the arguments")
     if arguments[0] == "network_size":
@@ -65,9 +66,29 @@ def config_argument(arguments, sub_node, log_level):
         new_network_architecture = arguments[1]
 
         if type(new_network_architecture) == str:
-            network_architecture = new_network_architecture
+            new_nodeConfig = client.write_nodestate(nodeConfig, 0, new_network_architecture, void=False)
+            return new_nodeConfig
             _primitives.log("Successfully set network_architecture to: " + network_architecture,
                             in_log_level="Info")
+        else:
+            print("The new network architecture is not a string")
+    elif arguments[0] == "port":
+        try:
+            if int(arguments[1]):
+                new_nodeConfig = client.write_nodestate(nodeConfig, 0, arguments[1], void=False)
+                return new_nodeConfig
+        except (ValueError, TypeError):
+            print("That is not a valid port")
+    elif arguments[0] == "network_size" or arguments[0] == "net_size":
+        try:
+            new_net_size = int(arguments[1])
+            new_nodeConfig = client.write_nodestate(nodeConfig, 0, new_net_size, void=False)
+            return new_nodeConfig
+        except(ValueError, TypeError):
+            print("That is not a valid net size")
+    elif arguments[0] == "command execution":
+        new_nodeConfig = client.write_nodestate(nodeConfig, 0, False, void=False)
+        print("NOT ENABLING A REMOTE CODE EXECUTION EXPLOIT, DUFUS!")
     elif arguments[0] == "permanent":
         if arguments[1] == "port":
             change_port(arguments)
