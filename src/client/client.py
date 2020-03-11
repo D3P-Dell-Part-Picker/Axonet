@@ -49,7 +49,8 @@ class Client:
 
     @staticmethod
     def lock(lock, name=None):
-        if name and type(name) == str:
+
+      if name and type(name) == str:
          Primitives.log("Locking: "+name, in_log_level="Info")
 
         lock.acquire()
@@ -121,7 +122,7 @@ class Client:
 
     def write_nodeConfig(self, _nodeConfig, index, value):
         return self.write_nodestate(nodeConfig, index, value)
-
+      
     @staticmethod
     def prepare(message, salt=True):
         """ Assign unique hashes to messages ready for transport.
@@ -410,7 +411,7 @@ class Client:
 
             else:
                 do_mesh_propagation = self.read_nodestate(12)
-                
+
             Primitives.log("Doing mesh propagation: "+str(do_mesh_propagation), in_log_level="Debug")
   
             # Network not bootstrapped yet, do ring network propagation
@@ -447,6 +448,7 @@ class Client:
         return 0
 
     def write_to_page(self, page_id, data, signing=True, filter_duplicate_data=True):
+
         global fileIO_lock
         """ Append data to a given pagefile by ID."""
 
@@ -539,6 +541,7 @@ class Client:
         Depending on the network configuration/architecture, nodes will either refuse
         to send messages with signatures that appear in the message_list(ring propagation), or refuse to respond to
         messages with signatures appearing in the message_list(mesh/fully-complete message propagation)"""
+
 
         if sig in message_list:
             not_responding_to_msg = str("Not responding to " + sig)
@@ -1257,12 +1260,17 @@ class Client:
 
         self.release(respond_lock, name="Respond lock")
 
+        self.release(respond_lock, name="Respond lock")
+
     def listen(self, connection):
         # Listen for incoming messages and call self.respond() to respond to them.
         # Also, deal with disconnections as they are most likely to throw errors here.
         # Returns nothing.
 
+        global receive_lock
+
         def listener_thread(conn):
+            global receive_lock
             in_sock = conn[0]
             terminated = self.read_nodestate(3)
             listener_terminated = False  # Terminate when set
@@ -1407,7 +1415,9 @@ class Client:
                 try:
                     connection = (sock, remote_address)
                     self.connect(connection, remote_address, port)
+
                     Primitives.log(str("Starting listener on " + remote_address), in_log_level="")
+
                     self.listen(connection)
 
                     if net_architecture == "complete":

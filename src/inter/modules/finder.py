@@ -5,12 +5,14 @@ import primitives
 import client
 import readPartNumbers
 
+
 # Allow us to import the client
 this_dir = os.path.dirname(os.path.realpath(__file__))
 os.chdir(this_dir)
 sys.path.insert(0, '../../../client/')
 sys.path.insert(0, '../../../server/')
 sys.path.insert(0, (os.path.abspath('../../inter/misc')))
+
 try:
     import board
     import busio
@@ -21,6 +23,10 @@ except ImportError:
 
 os.chdir(os.path.abspath('../../client/'))
 
+def led_on(shelf_num):
+    pass
+    # interface led
+    # RPI GPIO module
 
 def respond_start(message, sub_node, log_level, line_number_list=None):
     _primitives = primitives.Primitives(sub_node, log_level)
@@ -64,7 +70,7 @@ def display_token(token):
 
 
 def clear_display():
-
+  
     # Create the I2C interface.
     i2c = busio.I2C(board.SCL, board.SDA)
 
@@ -74,3 +80,4 @@ def clear_display():
 
     # Clear the display.
     display.fill(0)
+
