@@ -12,7 +12,7 @@ try:
     import board
     import busio
     from adafruit_ht16k33 import segments
-except ImportError:
+except (ImportError, NameError):
     print("Not a raspberry so cant import board")
 
 import primitives
