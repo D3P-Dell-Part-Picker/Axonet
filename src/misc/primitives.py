@@ -69,7 +69,8 @@ class Primitives:
 
     def download_file(self, url):
         try:
-            response = urllib.request.urlopen(url)
+            response = urllib.request.urlopen(url, timeout=2)
+
             data = response.read()  # a `bytes` object
             text = data.decode('utf-8')  # a `str`; this step can't be used if data is binary
             return text
@@ -137,7 +138,10 @@ class Primitives:
                 raw_packet = (sock.recv(n - len(data)))
                 packet = raw_packet.decode()  # If this fails, we still have a packet to work with/debug
 
-            except OSError:
+            except socket.timeout:
+                return None
+
+            except OSError:  # ReceiveAll
                 self.log("Connection probably down or terminated (OSError: receiveall()",
                          in_log_level="Warning")
                 raise ValueError
