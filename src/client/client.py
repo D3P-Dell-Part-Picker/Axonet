@@ -497,6 +497,7 @@ class Client:
         message_list = self.read_nodestate(1)
         propagation_allowed = True
         original_path = self.read_nodeConfig(6)
+        print(original_path)
         os.chdir(original_path)
 
         if address == "127.0.0.1":
@@ -608,7 +609,10 @@ class Client:
 
                 new_nodeConfig = config_client.config_argument(arguments, self.read_nodeConfig(3),
                                                                self.read_nodeConfig(2), nodeConfig)
-                self.overwrite_nodestate(new_nodeConfig, write_nodeConfig=True)
+                if new_nodeConfig:
+                    self.overwrite_nodestate(new_nodeConfig, write_nodeConfig=True)
+                else:
+                    pass
 
             # Instruct clients to connect to remote servers.
             if message.startswith("ConnectTo:"):
@@ -1259,8 +1263,8 @@ class Client:
                 try:
                     if incoming:
                         self.respond(conn, raw_message)
-
-                except TypeError:
+# TODO CHANGE BACK NOW
+                except AttributeError:
                     conn_severed_msg = str("Connection to " + str(in_sock)
                                            + "was severed or disconnected."
                                            + "(TypeError: listen() -> listener_thread()")
