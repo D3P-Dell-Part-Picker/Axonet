@@ -19,7 +19,6 @@ def download_racks_csv(url):
 
 
 def find_my_parts(local_ip, directory_server, path_to_client=None):
-
     """Given a nodes static IP, find all part numbers assigned to it in the master spreadsheet
         Returns list [(part number, part name, line #), ..., (part number n, part name n, line # n)]"""
     if path_to_client:
@@ -50,7 +49,6 @@ def find_my_parts(local_ip, directory_server, path_to_client=None):
 
         try:
             part_number_assignments = open(os.path.abspath("./Racks.csv"))
-
             print("Local Racks.csv found! Proceeding...")
 
         except FileNotFoundError:
@@ -69,4 +67,3 @@ def find_my_parts(local_ip, directory_server, path_to_client=None):
 
 if __name__ == "__main__":
     print(find_my_parts(_primitives.get_local_ip()))
-

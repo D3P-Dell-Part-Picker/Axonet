@@ -82,14 +82,12 @@ def config_net_size(arguments):
             pass
         elif arguments[1] == "network_size" or arguments[1] == "net_size":
             config_net_size(arguments)
-
             pass
         else:
             print("Error \"" + arguments[1] + "\" isn't correct syntax")
 
 
 #TODO: What's going on here?
-
 """
 def port(arguments):
     print("?????????????????")
@@ -105,5 +103,5 @@ def port(arguments):
             print("That is not a valid port")
     except TypeError:
         print("That is not a valid port")
-"""
 
+"""

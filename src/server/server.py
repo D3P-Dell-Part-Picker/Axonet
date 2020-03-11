@@ -207,7 +207,8 @@ class Server:
             Primitives.log("Message propagation mode: ring", in_log_level="Debug")
 
         for connection in net_tuple:
-          
+
+            # Deadlock here
             print("Sending "+message + "to " + str(connection))
             self.send(connection, message, signing=False)  # Send a message to each node( = Broadcast)
 
