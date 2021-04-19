@@ -1,6 +1,9 @@
 import os
 import sys
 import time
+import primitives
+import client
+import readPartNumbers
 
 # Allow us to import the client
 this_dir = os.path.dirname(os.path.realpath(__file__))
@@ -8,58 +11,78 @@ os.chdir(this_dir)
 sys.path.insert(0, '../../../client/')
 sys.path.insert(0, '../../../server/')
 sys.path.insert(0, (os.path.abspath('../../inter/misc')))
+
 try:
     import board
-    import busio
-    from adafruit_ht16k33 import segments
-except (ImportError, NameError):
-    print("Not a raspberry so cant import board")
+    import neopixel
 
-import primitives
-import client
-import readPartNumbers
+    pixels = neopixel.NeoPixel(board.D18, 15)
+
+except ImportError:
+    print("Not a raspberry so cant import board")
 
 os.chdir(os.path.abspath('../../client/'))
 
-# Create the I2C interface.
-i2c = busio.I2C(board.SCL, board.SDA)
-# This creates a 7 segment 4 character display:
-display = segments.Seg7x4(i2c)
 
-
-def respond_start(message, sub_node, log_level, line_number_list):
+def respond_start(message, sub_node, log_level, my_part_list=None):
     _primitives = primitives.Primitives(sub_node, log_level)
     arguments = _primitives.parse_cmd(message)
-
     print(arguments)
-    line_number = arguments[0]
-    print(line_number)
 
-    """  local_ip = _primitives.get_local_ip()
-    our_parts = readPartNumbers.find_my_parts(local_ip)
-    for item in our_parts:
-        part_number_list.append(item[0])
-        print(item[0])"""
+    if message.startswith("find"):
+        line_number = arguments[0]
+        color = arguments[1]
+        parts = line_number.split("/")
+        for item in parts:
+            print(my_part_list)
+            for i, data in enumerate(my_part_list):
+                if int(item) == my_part_list[i][1]:
+                    print("We found it", item)
+                    print("location", my_part_list[i][0])
+                    print('location', my_part_list)
+                    location = my_part_list[i][0].split('-')
+                    location = location[1]
+                    light_neopixel(color, location)
 
-    if line_number in line_number_list:
-        print("We found it")
+        """Called by the client's listener_thread when it received a [name]: flag"""
 
-    """Called by the client's listener_thread when it received a [name]: flag"""
+        # find shelf for item num
+        return
 
-    # find shelf for item num
-    return line_number
+    if message.startswith("reset"):
+        line_number = arguments[0]
+        parts = line_number.split("/")
+        for item in parts:
+            for i, data in enumerate(my_part_list):
+                if int(item) == my_part_list[i][1]:
+                    location = my_part_list[i][0].split('-')
+                    location = location[1]
+                    clear_display(location)
 
 
-def display_token(token):
+def light_neopixel(color, location):
+    section = {'0': [0, 1, 2],
+               '1': [3, 4, 5],
+               '2': [6, 7, 8],
+               '3': [9, 10, 11],
+               '4': [12, 13, 14]}
+    color = color.split('/')
+    red_val = int(color[0])
+    green_val = int(color[1])
+    blue_val = int(color[2])
+
+    for i in section[location]:
+        pixels[i] = (red_val, green_val, blue_val)
+
+
+def clear_display(location):
+    section = {'0': [0, 1, 2],
+               '1': [3, 4, 5],
+               '2': [6, 7, 8],
+               '3': [9, 10, 11],
+               '4': [12, 13, 14]}
+    for i in section[location]:
+        pixels[i] = (0, 0, 0)
+    # Create the LED segment class.
+    # This creates a 7 segment 4 character display:
     # Clear the display.
-    display.fill(0)
-
-    display.print(token)
-
-
-def clear_display():
-
-    i2c = busio.I2C(board.SCL, board.SDA)
-    display = segments.Seg7x4(i2c)
-    # Clear the display.
-    display.fill(0)
