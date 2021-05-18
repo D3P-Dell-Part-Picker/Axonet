@@ -11,6 +11,7 @@ with open("client_configuration.json") as client_configuration:
     port = client_config_data["port"]
     network_architecture = client_config_data["network_architecture"]
     remote_addresses = client_config_data["remote_addresses"]
+    arduino_addresses = client_config_data["arduino_addresses"]
     command_execution = client_config_data["command_execution"]
     default_log_level = client_config_data["default_log_level"]
     modules = client_config_data["modules"]

@@ -18,6 +18,7 @@ print("Connecting to localhost...")
 _socket = socket.socket()
 _socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
+
 def prepare(message):
     """ Assign unique hashes to messages ready for transport.
         Returns (new hashed message) -> str """
@@ -41,13 +42,12 @@ def prepare(message):
 
 
 def send_to_localhost(message):
-    print("Sending: "+message)
+    print("Sending: " + message)
     _socket.sendall(prepare(message))
     print(str(_socket))
 
 
 def run(ip=None, msg=None):
-
     if ip:
         print(ip)
         try:
@@ -86,7 +86,6 @@ def run(ip=None, msg=None):
         sys.exit(1)
 
     else:
-        # Unnecessary shit for complicated network operations
         if msg.startswith("$vote:"):
             args = Primitives.parse_cmd(msg)
             reason = args[0]
@@ -98,7 +97,7 @@ def run(ip=None, msg=None):
             print("Starting peer discovery")
 
             op_id = secrets.token_hex(8)
-            send_to_localhost("vote:discovery-"+op_id)
+            send_to_localhost("vote:discovery-" + op_id)
 
     _socket.shutdown(0)
     _socket.close()

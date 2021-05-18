@@ -29,7 +29,8 @@ no_prop = "ffffffffffffffff"
 ring_prop = "eeeeeeeeeeeeeeee"
 localhost = socket.socket()
 localhost.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  # Nobody likes TIME_WAIT-ing. Add SO_REUSEADDR.
-nodeConfig = [3705, False, "Debug", "Client", None, None, _original_path, 0, "", "", "", localhost] # 13 bytes + context
+nodeConfig = [3705, False, "Debug", "Client", None, None, _original_path, 0, "", "", "",
+              localhost]  # 13 bytes + context
 
 # Mutable state; Write with writeState(), Read with readState(). Contains default values until changed
 nodeState = [(), [], False, False, [], "", [], 0, [], [], False, False, False]
@@ -50,7 +51,7 @@ class Client:
     @staticmethod
     def lock(lock, name=None):
         if name and type(name) == str:
-         Primitives.log("Locking: "+name, in_log_level="Info")
+            Primitives.log("Locking: " + name, in_log_level="Info")
 
         lock.acquire()
 
@@ -86,11 +87,11 @@ class Client:
 
         if void:
             if in_nodestate == nodeConfig:
-                print("Setting nodeConfig["+str(index)+"]"+" to "+str(value))
+                print("Setting nodeConfig[" + str(index) + "]" + " to " + str(value))
                 nodeConfig = list(in_nodestate)
 
             else:
-                print("Setting nodeState["+str(index)+"]"+" to "+str(value))
+                print("Setting nodeState[" + str(index) + "]" + " to " + str(value))
 
                 nodeState = list(in_nodestate)
 
@@ -115,14 +116,13 @@ class Client:
 
         return current_nodeState[index]
 
-
     def read_nodeConfig(self, index):
         global nodeConfig
         return self.read_nodestate(index, in_nodestate=nodeConfig)
 
     def write_nodeConfig(self, _nodeConfig, index, value):
         return self.write_nodestate(nodeConfig, index, value)
-      
+
     @staticmethod
     def prepare(message, salt=True):
         """ Assign unique hashes to messages ready for transport.
@@ -281,7 +281,7 @@ class Client:
                     try:
                         sock.connect((address, port))
                     except OSError:
-                        Primitives.log("Unable to connect to "+address+". (OSError)", in_log_level="Warning")
+                        Primitives.log("Unable to connect to " + address + ". (OSError)", in_log_level="Warning")
 
                     Primitives.log("Successfully connected.", in_log_level="Info")
                     self.append(sock, address)
@@ -297,7 +297,7 @@ class Client:
                         self.append(sock, "127.0.0.1")
 
                     except OSError:
-                        Primitives.log("Unable to connect to "+address+". (OSError)", in_log_level="Warning")
+                        Primitives.log("Unable to connect to " + address + ". (OSError)", in_log_level="Warning")
 
                     # The socket object we appended earlier was automatically
                     # destroyed by the OS because connections to 0.0.0.0 are illegal...
@@ -411,9 +411,9 @@ class Client:
 
             else:
                 do_mesh_propagation = self.read_nodestate(12)
-                
-            Primitives.log("Doing mesh propagation: "+str(do_mesh_propagation), in_log_level="Debug")
-  
+
+            Primitives.log("Doing mesh propagation: " + str(do_mesh_propagation), in_log_level="Debug")
+
             # Network not bootstrapped yet, do ring network propagation
             if message[:16] != ring_prop:
                 message = ring_prop + ":" + message
@@ -647,7 +647,8 @@ class Client:
                         # All kinds of bad things happen if you do.
                         if remote_adress_is_localhost:
 
-                            not_connecting_msg = str("Not connecting to " + connect_to_address + "; That's localhost :P")
+                            not_connecting_msg = str(
+                                "Not connecting to " + connect_to_address + "; That's localhost :P")
                             Primitives.log(not_connecting_msg, in_log_level="Warning")
 
                         else:
@@ -869,8 +870,9 @@ class Client:
                                             print("Writing " + sync_data + "to page " + page_id)
                                             self.write_to_page(page_id, sync_data, signing=False)
                                     else:
-                                        Primitives.log("Writing " + str(len(sync_data)) + " bytes to " + page_id + ".bin",
-                                                       in_log_level="Info")
+                                        Primitives.log(
+                                            "Writing " + str(len(sync_data)) + " bytes to " + page_id + ".bin",
+                                            in_log_level="Info")
 
                         # https://stackoverflow.com/a/1216544
                         # https://stackoverflow.com/users/146442/marcell
@@ -884,8 +886,8 @@ class Client:
                         raw_lines = list(set(open(file_path).readlines()))
 
                         existing_lines = list(set(
-                                    [raw_line for raw_line in raw_lines
-                                     if raw_line != "\n" and raw_line[:2] != "##"]))
+                            [raw_line for raw_line in raw_lines
+                             if raw_line != "\n" and raw_line[:2] != "##"]))
 
                         # Write changes to page
                         open(file_path, 'w').writelines(set(existing_lines))
@@ -934,17 +936,19 @@ class Client:
                     import finder
                     import readPartNumbers
                     os.chdir(this_dir)
-
-                    my_part_list = []
-                    local_ip = Primitives.get_local_ip()
+                    arduino_addresses = ["10.12.32.152", "192.168.10.58", "192.168.10.76", "192.168.10.4"]
+                    my_part_list = {}
+                    local_ip = Primitives.get_local_ip()  # TODO get part list for all arduino IP
                     directory_server = self.read_nodeConfig(10)
-                    our_parts = readPartNumbers.find_my_parts(local_ip, directory_server, path_to_client=this_dir)
-
-                    for item in our_parts:
-                        line_num = item[3]
-                        part_location = item[2]
-                        print(line_num)
-                        my_part_list.append([part_location, line_num])
+                    our_parts = readPartNumbers.find_my_parts(arduino_addresses, directory_server,
+                                                              path_to_client=this_dir)
+                    for arduino_address in our_parts:
+                        my_part_list[arduino_address] = []
+                        for item in our_parts[arduino_address]:
+                            # TODO reconfigure find parts
+                            line_num = item[3]
+                            part_location = item[2]
+                            my_part_list[arduino_address].append([part_location, line_num])
                     sub_node = self.read_nodeConfig(3)
                     log_level = self.read_nodeConfig(2)
                     finder.respond_start(message, sub_node, log_level, my_part_list=my_part_list)
@@ -1053,8 +1057,9 @@ class Client:
 
                         this_campaign_list = list(set(this_campaign_list))  # Remove any duplicate entries
 
-                        Primitives.log(str(len(this_campaign_list)) + " nodes have cast votes for "+election_details[0])
-                        Primitives.log("Network size: "+str(self.read_nodeConfig(7)))
+                        Primitives.log(
+                            str(len(this_campaign_list)) + " nodes have cast votes for " + election_details[0])
+                        Primitives.log("Network size: " + str(self.read_nodeConfig(7)))
 
                         # If all votes are cast, elect a leader.
                         network_size = self.read_nodeConfig(7)
@@ -1064,7 +1069,6 @@ class Client:
 
                             campaign_tokens = [campaign_tuple[1] for campaign_tuple in campaign_list
                                                if campaign_tuple[0] == reason]
-
 
                             winning_token = max(campaign_tokens)
 
@@ -1080,7 +1084,8 @@ class Client:
                             election_log_msg = str(winning_token) + " won the election for: " + winning_reason
                             Primitives.log(election_log_msg, in_log_level="Info")
 
-                            this_campaign = self.read_nodestate(7)  # TODO: this could cause or suffer from race conditions
+                            this_campaign = self.read_nodestate(
+                                7)  # TODO: this could cause or suffer from race conditions
 
                             Primitives.log(winning_candidate + " won the election for: " + winning_reason,
                                            in_log_level="Info")
@@ -1138,7 +1143,7 @@ class Client:
                         self.write_nodestate(nodeState, 10, False)  # Set ongoing_election = False
 
                         is_cluster_rep = (new_leader == Primitives.get_local_ip())
-                        print("is_cluster_rep: "+str(is_cluster_rep))
+                        print("is_cluster_rep: " + str(is_cluster_rep))
 
                         Primitives.log(str(new_election_list), in_log_level="Debug")
 
@@ -1342,7 +1347,7 @@ class Client:
         global nodeConfig
         global Primitives
 
-        SALT = secrets.token_hex(16) # Generate SALT
+        SALT = secrets.token_hex(16)  # Generate SALT
 
         # nodeConfig assignments
         self.write_nodeConfig(nodeConfig, 0, port)
