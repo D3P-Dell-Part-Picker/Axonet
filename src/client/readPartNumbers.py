@@ -21,7 +21,7 @@ def download_racks_csv(url):
     racks_file.write(text)
 
 
-def find_my_parts(arduino_addresses, directory_server, path_to_client=None):
+def find_my_parts(arduino_addresses, path_to_client=None):
     """Given a nodes static IP, find all part numbers assigned to it in the master spreadsheet
         Returns list [(part number, part name, line #), ..., (part number n, part name n, line # n)]"""
     if path_to_client:
@@ -62,8 +62,10 @@ def find_my_parts(arduino_addresses, directory_server, path_to_client=None):
         csv_reader = csv.reader(part_number_assignments, delimiter=',')
         """
         for row in query_part_picker_db.query_db():
-            if ip_byte_four == row[3]:
-                parts[arduino_ip].append((row[0], row[1], row[2], row[4]))
+            part_IPsrow = row[3].split('/')
+            for ip in part_IPsrow:
+                if ip_byte_four == ip:
+                    parts[arduino_ip].append((row[0], row[1], row[2], row[4]))
 
         _primitives.log("Found " + str(len(parts[arduino_ip])) + " parts assigned to " + arduino_ip + "...", in_log_level='Debug')
 

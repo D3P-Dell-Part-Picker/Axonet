@@ -936,11 +936,10 @@ class Client:
                     import finder
                     import readPartNumbers
                     os.chdir(this_dir)
-                    arduino_addresses = ["10.12.32.152", "192.168.10.58", "192.168.10.76", "192.168.10.4"]
+                    arduino_addresses = ["10.12.32.108", "192.168.10.58", "192.168.10.76", "192.168.10.4"]
                     my_part_list = {}
                     local_ip = Primitives.get_local_ip()  # TODO get part list for all arduino IP
-                    directory_server = self.read_nodeConfig(10)
-                    our_parts = readPartNumbers.find_my_parts(arduino_addresses, directory_server,
+                    our_parts = readPartNumbers.find_my_parts(arduino_addresses,
                                                               path_to_client=this_dir)
                     for arduino_address in our_parts:
                         my_part_list[arduino_address] = []
