@@ -930,15 +930,16 @@ class Client:
 
                                 elif len(existing_lines) >= network_size:
                                     print(
-                                        "(sync) not fetching: " + page_id + ".bin" + '; All contributions have been written')
+                                        "(sync) not fetching: " + page_id + ".bin" + '; All contributions have been '
+                                                                                     'written')
 
                 if message.startswith("find:") or message.startswith("reset:"):
                     import finder
                     import readPartNumbers
                     os.chdir(this_dir)
-                    arduino_addresses = ["10.12.32.108", "192.168.10.58", "192.168.10.76", "192.168.10.4"]
+                    arduino_addresses = ["#", "192.168.10.58", "192.168.10.76", "192.168.10.4"]
                     my_part_list = {}
-                    local_ip = Primitives.get_local_ip()  # TODO get part list for all arduino IP
+                    # TODO get part list for all arduino IP
                     our_parts = readPartNumbers.find_my_parts(arduino_addresses,
                                                               path_to_client=this_dir)
                     for arduino_address in our_parts:
