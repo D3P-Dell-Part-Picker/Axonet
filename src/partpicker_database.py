@@ -11,8 +11,8 @@ Depending on the type of activity the data will be written to a specific table s
 # set database to robot_db
 def init_db():
     try:
-        part_picker_db = mysql.connector.connect(user='##', password='######', host='########',
-                                                 database='##########')
+        part_picker_db = mysql.connector.connect(user='pi', password='Welcome00', host='10.12.33.28',
+                                                 database='partpicker')
         return part_picker_db
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:

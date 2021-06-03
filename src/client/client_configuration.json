@@ -1,6 +1,6 @@
 {
   "port" : 3705,
-  "remote_addresses" : ["10.12.32.130"],
+  "remote_addresses" : ["10.12.32.106"],
   "arduino_addresses": ["192.168.10.1","192.168.10.2","192.168.10.3","192.168.10.4"],
   "command_execution" : true,
   "default_log_level" : "Debug",
