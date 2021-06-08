@@ -1,4 +1,5 @@
 import mysql.connector
+from datetime import datetime
 from mysql.connector import errorcode
 
 """The plan is to call the write _to_table function in the mission_runner.py and the call.py python files when the 
@@ -11,8 +12,8 @@ Depending on the type of activity the data will be written to a specific table s
 # set database to robot_db
 def init_db():
     try:
-        part_picker_db = mysql.connector.connect(user='pi', password='Welcome00', host='10.12.33.28',
-                                                 database='partpicker')
+        part_picker_db = mysql.connector.connect(user='#', password='#', host='#',
+                                                 database='#')
         return part_picker_db
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -60,10 +61,19 @@ def write_to_table(table, data, add):
         command = "INSERT INTO racks (part_number, description, location, ip) VALUES (%s ,%s, %s, %s)"
         write_data(command, data)
     elif table == "leds":
+        timeout = datetime.now()
+
+            # column
         if add:
-            command = "INSERT INTO leds (color, location) VALUES (%s ,%s)"
+            for i, row in enumerate(data):
+                data[i].insert(2, timeout)  # inserting the timestamp into index 1 of the data so it writes to the
+                # correct
+            command = "INSERT INTO leds (color, location, timeout) VALUES (%s , %s, %s)"
         else:
-            command = "UPDATE leds SET color = %s WHERE location = %s"
+            for i, row in enumerate(data):
+                data[i].insert(1, timeout)  # inserting the timestamp into index 1 of the data so it writes to the
+                # correct
+            command = "UPDATE leds SET color = %s, timeout = %s WHERE location = %s"
         print(command, data)
         write_data(command, data)
 

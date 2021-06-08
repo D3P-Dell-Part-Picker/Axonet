@@ -1,6 +1,4 @@
 import os
-import sys
-import time
 import readPartNumbers
 import partpicker_database
 import socket
@@ -8,24 +6,13 @@ import socket
 this_dir = os.path.dirname(os.path.realpath(__file__))
 os.chdir(this_dir)
 
-# Allow us to import the client
-"""
-sys.path.insert(0, '../../../client/')
-sys.path.insert(0, '../../../server/')
-sys.path.insert(0, (os.path.abspath('../../inter/misc')))
-
-os.chdir(os.path.abspath('../../client/'))
-"""
-
 
 def respond_start(message):
     message = message.split(':')
-    print(message)
     arguments = message[1:]
-    print(arguments)
     if message[0] == "find" or message[0] == "reset":
         os.chdir(this_dir)
-        arduino_addresses = ["10.12.32.106", "192.168.10.58", "192.168.10.76", "192.168.10.4"]
+        arduino_addresses = ["#", "192.168.10.58", "192.168.10.76", "192.168.10.4"]
         my_part_list = {}
         # TODO get part list for all arduino IP
         our_parts = readPartNumbers.find_my_parts(arduino_addresses,
@@ -94,14 +81,12 @@ def respond_start(message):
                                     if location in part_location:
 
                                         if int(r) != 0 or int(g) != 0 or int(b) != 0:
-                                            # TODO update the timeout or that led
+                                            # TODO update the timeout of that led
                                             pass
                                         else:
-                                            # print(leds)
                                             if bool(leds.get(key)):
                                                 leds[key].append([color,
-                                                                  location])  # TODO fix this... not all values are being
-                                                # updated in the database... could have to fo with the any statement
+                                                                  location])
                                                 update_leds.append([color_string, location])
                                             else:
                                                 leds[key] = [[color, location]]
@@ -113,7 +98,6 @@ def respond_start(message):
                                 else:
                                     if bool(leds.get(key)):
                                         leds[key].append([color, part_location])
-                                        print(leds[key])
                                         add_leds.append([color, part_location])
 
                                         # locations equal

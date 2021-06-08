@@ -1,18 +1,15 @@
 import socket
-import sys
-sys.path.insert(0, 'inter/modules')
 import finder
-
-web_server = '127.0.0.1'
-server = socket.gethostbyname(socket.gethostname())
-port = 3705
+web_server = '#'
+port = #
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind(('127.0.0.1', port))
+    print("Starting up server on ({0}, {1})".format('#', port))
+    s.bind(('#', port))
     s.listen()
     while True:
         connection, address = s.accept()
         with connection:
-            print(address)
+            print(address, "Connected")
             if address[0] == web_server:
                 msg = None
                 while True:
@@ -22,5 +19,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                         msg = data
                     else:
                         break
-                print(msg)
+                print("Received", msg, "from", address)
                 finder.respond_start(msg)
