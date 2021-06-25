@@ -1,9 +1,11 @@
-.parts_list{
+#parts_table_wrapper{
+position: absolute;
 width: 35%;
 background-color: #808080;
-padding:40px;
-float: right;
-border-radius: 10px;
+padding:15px;
+right: 10px;
+top: 50px;
+border-radius: 5px;
 }
 
 .parts_list thead{
@@ -11,7 +13,10 @@ color: #FFFFFF;
 background-color: #A5A5A5;
 font-family : Arial, sans-serif;
 }
-
+#parts_table{
+width: auto ;
+scrollX: true;
+}
 
 #parts_table tbody{
 font-family : Arial, sans-serif;
@@ -33,22 +38,56 @@ color: #FFFFFF;
 
 .dt-buttons button{
 background-color: #FFFFFF;
-border-radius: 15px;
+border-radius: 5px;
 }
 
 
-.map_canvas{
-display: inline-block;
+#map_canvas{
+position: absolute;
+left: 10px;
 width: 55%;
 
 }
 body{
 border: none;
-background-color: #C0C0C0;
-background-color: #E0E0E0;
+background-color: #F5F5F0;
 }
 
-.content{
+#content{
 padding:10px;
-display: flex;
+display: grid;
+}
+
+.complete_modal{
+padding: 5px;
+color: #FFFFFF;
+font-family : Arial, sans-serif;
+position: relative;
+z-index: 1;
+background: radial-gradient(#41A6E6, #61E3FF);
+opacity: 1;
+font-size: 30px;
+width: 350px;
+height:200px;
+box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+word-wrap: normal;
+margin: auto;
+animation-name: fade;
+animation-duration: 0.65s;
+text-align: center;
+border-radius: 10px;
+display: none;
+}
+@keyframes fade{
+from{color; opacity: 0}
+to{opacity: 1}
+}
+
+
+.complete_modal button{
+font-size: 14px;
+background-color: #FFFFFF;
+border-radius:5px;
+width: 40%;
+height: 40px;
 }

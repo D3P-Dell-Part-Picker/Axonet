@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'partpickersite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'partpicker',
+        'NAME': '#',
         'USER': '#',
         'PASSWORD': '#',
         'HOST': '#',

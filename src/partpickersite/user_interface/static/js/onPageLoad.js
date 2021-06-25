@@ -1,8 +1,13 @@
 const csrftoken = Cookies.get('csrftoken');
 var table_data = []
 var num_items = 0
-};
-};//creates the table for all of the parts using datatables
+
+//creates the table for all of the parts using datatables
+for(i in racks){
+//table_data.push({"part_number": racks[i].fields["part_number"], "description": racks[i].fields["description"], "ip": racks[i].fields["ip"], "location": racks[i].fields["location"], "id": racks[i].pk})
+table_data.push([racks[i].fields["part_number"], racks[i].fields["description"], racks[i].fields["ip"], racks[i].fields["location"], racks[i].pk])
+}
+load_table()
 function load_table(racks_json){
     $(document).ready(function(){
         table = $('#racks_table').DataTable({

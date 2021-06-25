@@ -1,25 +1,32 @@
-.main_table{
-margin-bottom: 40px;
-width: 60%;
+html{
+height: 100%;
+}
+#racks_table_wrapper{
+font-family : Arial, sans-serif;
+min-width: 60%;
 padding: 25px;
-border-radius: 10px;
+border-radius: 5px;
 float: left;
 background-color: #EEEEEE;
 }
 
-.checkout_window{
-width: 30%;
+#checkout_table_wrapper{
+font-family : Arial, sans-serif;
+min-width: 30%;
 padding: 25px;
 float: right;
 background-color: #EEEEEE;
-border-radius: 10px;
+border-radius: 5px;
 }
 
 .table_windows{
+margin-top:30px;
 padding: 10px;
+width: auto;
+display: grid;
 }
 
 body{
 margin: 0;
-background-color:  #41B6E6;
+background-image: linear-gradient(to bottom right,  #00447C, #41B6E6);
 }

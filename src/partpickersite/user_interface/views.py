@@ -16,7 +16,7 @@ from user_interface.partpicker_database import query_database
 @csrf_protect
 def part_selector(request):
     data = Racks.objects.all()
-
+    data = serializers.serialize('json', data)
     racks = {
         "part_number": data,
         "description": data,
@@ -137,7 +137,7 @@ def load_map(request, selected_parts=None):
         return HttpResponse("Error")
 
 
-def reset_led(request):
+def reset_led(request, selected_parts=None):
     if request.method == "POST":
         led_parts = request.POST.get('parts_string').split('\\')
         for i, part in enumerate(led_parts):
@@ -147,7 +147,10 @@ def reset_led(request):
         for part in led_parts:
             for location in part[0]:
                 a = LEDS.objects.filter(location=location)[0]
-                keys = a.session_keys.split('|')
+                if a.session_keys:
+                    keys = a.session_keys.split('|')
+                else:
+                    continue
                 if not keys:
                     print("Session already timed out or Error has occured")
                     continue

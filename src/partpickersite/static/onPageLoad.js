@@ -1,26 +1,12 @@
 const csrftoken = Cookies.get('csrftoken');
 var table_data = []
 var num_items = 0
-var xhttp = new XMLHttpRequest();
-    xhttp.open("POST", "data", true);
-    xhttp.setRequestHeader("X-CSRFToken", csrftoken);
-    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send();
-    xhttp.onload = function () {
-    if (xhttp.readyState = XMLHttpRequest.DONE){
-        var db_json = JSON.parse(xhttp.responseText);
-        db_json.racks = JSON.parse(db_json.racks);
-           for(i=0; i < Object.keys(db_json.racks).length;i++) {
-               db_row = db_json.racks[i];
-               table_data[i] = [db_row.fields.part_number, db_row.fields.description, db_row.fields.location, db_row.fields.ip, db_row.pk];
-           };
-           load_table();
-};
-};
+//creates the table for all of the parts using datatables
 function load_table(racks_json){
     $(document).ready(function(){
-        //create the main table for the user to select the parts to find
         table = $('#racks_table').DataTable({
+            scrollY: '500px',
+            scrollCollapse: false,
             select: 'row',
             multiselect: true,
             data: table_data,
@@ -33,11 +19,13 @@ function load_table(racks_json){
             { title: "IP" },
             { title: "ID" }]
         });
-        //create a checkout table to show the user the current parts they have selected
+        //creates a table for the selected parts
         checkout_table = $('#checkout_table').DataTable({
+            scrollY: '500px',
+            scrollCollapse: false,
             select: 'row',
             multiselect: true,
-            data: [[' ',' ',' ', ' ', ' ']],
+            data: [],
             order: [1, 'asc'],
             paging: false,
             dom: 'Bfrtip',
@@ -52,7 +40,7 @@ function load_table(racks_json){
         });
         checkout_table.clear();
 
-        //add the selected part to the checkout table
+        //adds the part to the checkout table when it is selected
         table.on('select', function(e, dt, type, indexes){
             if(type === 'row'){
                 rows= table.rows('.selected').data();
@@ -62,7 +50,7 @@ function load_table(racks_json){
                 }};
                 checkout_table.row.add(selected_row).draw();
         }});
-        //remove the selected part from the checkout table
+        //removes the part from the checkout table when deselected
         table.on('deselect', function(e, dt, type, indexes){
                 if(type === 'row'){
                 row_index = parseInt(table.rows(indexes)[0]) + 1;
@@ -73,9 +61,8 @@ function load_table(racks_json){
                         break;
                 }};
         }});
-        //remove the part from the checkout table
+        //removes the part from the checkout table when it is selected
         checkout_table.on('select', function(e, dt, type, indexes){
-        //TODO Indexing is very broken here
             if(type === 'row'){
                 row_to_deselect_index = checkout_table.rows(indexes).data()[0][4];
                 console.log(row_to_deselect_index, indexes)
@@ -86,28 +73,36 @@ function load_table(racks_json){
         }});
     });
 };
-//send a request to the server to light up the LED for each part selected
-//load the map with lights of each part selected
 function checkout(){
     part_dictionary = [];
+    part_numbers = []
     for(i=0; i < checkout_table.rows().data().length;i++){
         part_dictionary[i] = checkout_table.rows().data()[i];
+        part_numbers[i] = checkout_table.rows().data()[i][4];
     };
-
         $.ajaxSetup({
             beforeSend: function(xhr) {
                 xhr.setRequestHeader('X-CSRFToken', csrftoken);
         }});
-    //send a request to the server to light up the led for each part selected
+
+//sends a post request with the data for the parts in the checkout table
     $.ajax({
         type: "POST",
         data: {'parts':JSON.stringify(part_dictionary)},
         dataType: "json",
-        url: "map"
+        url: "map",
+        complete: function(response){
+        url_data = String(response.responseText)
+        url_data = encodeURI(url_data)
+        console.log(url_data)
+        document.location =`map/${url_data}`
+
+        }
     }).done(function (res) {
-    console.log(res)
     });
-    //change thr url to load the map
-    window.location.href = 'map';
+
+
+    //console.log(part_numbers)
+    //document.location = `map/${test}`
 
 };
