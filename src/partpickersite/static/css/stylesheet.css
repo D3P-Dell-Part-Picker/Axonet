@@ -1,0 +1,25 @@
+.main_table{
+margin-bottom: 40px;
+width: 60%;
+padding: 25px;
+border-radius: 10px;
+float: left;
+background-color: #EEEEEE;
+}
+
+.checkout_window{
+width: 30%;
+padding: 25px;
+float: right;
+background-color: #EEEEEE;
+border-radius: 10px;
+}
+
+.table_windows{
+padding: 10px;
+}
+
+body{
+margin: 0;
+background-color:  #41B6E6;
+}

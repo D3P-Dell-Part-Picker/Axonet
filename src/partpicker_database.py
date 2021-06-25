@@ -1,5 +1,5 @@
 import mysql.connector
-from datetime import datetime
+from datetime import datetime, timedelta
 from mysql.connector import errorcode
 
 """The plan is to call the write _to_table function in the mission_runner.py and the call.py python files when the 
@@ -9,11 +9,10 @@ Depending on the type of activity the data will be written to a specific table s
 """
 
 
-# set database to robot_db
 def init_db():
     try:
-        part_picker_db = mysql.connector.connect(user='#', password='#', host='#',
-                                                 database='#')
+        part_picker_db = mysql.connector.connect(user='pi', password='Welcome00', host='10.12.33.231',
+                                                 database='partpicker')
         return part_picker_db
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -34,8 +33,6 @@ def query_database(table):
         cursor.execute(query, data)
 
         for item in cursor:
-            # print(item)
-
             data_list.append(item)
         cursor.close()
         part_picker_db.close()
@@ -56,25 +53,28 @@ def query_database(table):
         return data_list
 
 
-def write_to_table(table, data, add):
+def write_to_table(table, data, task):
     if table == "racks":
         command = "INSERT INTO racks (part_number, description, location, ip) VALUES (%s ,%s, %s, %s)"
         write_data(command, data)
     elif table == "leds":
-        timeout = datetime.now()
+        timeout = datetime.now() + timedelta(minutes=15)  # writes the current time + 15 minutes as the timeout
 
-            # column
-        if add:
+        if task == 1:
             for i, row in enumerate(data):
                 data[i].insert(2, timeout)  # inserting the timestamp into index 1 of the data so it writes to the
                 # correct
             command = "INSERT INTO leds (color, location, timeout) VALUES (%s , %s, %s)"
-        else:
+        elif task == 0:
             for i, row in enumerate(data):
                 data[i].insert(1, timeout)  # inserting the timestamp into index 1 of the data so it writes to the
                 # correct
             command = "UPDATE leds SET color = %s, timeout = %s WHERE location = %s"
-        print(command, data)
+        elif task == 2:
+            for i, row in enumerate(data):
+                data[i].insert(0, timeout)
+            command = "UPDATE leds SET timeout = %s WHERE location = %s"
+        #print(command, data)
         write_data(command, data)
 
 

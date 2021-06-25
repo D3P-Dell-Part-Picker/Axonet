@@ -1,0 +1,54 @@
+.parts_list{
+width: 35%;
+background-color: #808080;
+padding:40px;
+float: right;
+border-radius: 10px;
+}
+
+.parts_list thead{
+color: #FFFFFF;
+background-color: #A5A5A5;
+font-family : Arial, sans-serif;
+}
+
+
+#parts_table tbody{
+font-family : Arial, sans-serif;
+}
+
+#parts_table_filter input{
+font-family : Arial, sans-serif;
+color: #FFFFFF;
+}
+
+#parts_table_filter label{
+font-family : Arial, sans-serif;
+color: #FFFFFF;
+}
+
+#parts_table_filter{
+color: #FFFFFF;
+}
+
+.dt-buttons button{
+background-color: #FFFFFF;
+border-radius: 15px;
+}
+
+
+.map_canvas{
+display: inline-block;
+width: 55%;
+
+}
+body{
+border: none;
+background-color: #C0C0C0;
+background-color: #E0E0E0;
+}
+
+.content{
+padding:10px;
+display: flex;
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Map</title>
+    {% load static %}
+    <script>
+    var parts = {{parts|safe}};
+    var colors = {{colors|safe}};
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'js/DataTables/datatables.min.js' %}"></script>
+    <link href="{% static 'js/Datatables/datatables.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/map.css' %}" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+<div id="content">
+    <canvas id="map_canvas" width="800" height="400">
+    </canvas>
+    <script src="{% static 'js/canvas.js' %}"></script>
+    <script src="{% static 'js/map.js' %}"></script>
+    {% csrf_token %}
+    <div class ="parts_list">
+        <table id="parts_table">
+            <thead>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="complete_modal">
+    <span>
+    <p>
+        Hello
+        <!-- Thank you for using the Pick-to-light System! -->
+    </p>
+        <button id="#back_button">Back to Part Selector</button>
+    </span>
+</div>
+
+</body>
+</html>

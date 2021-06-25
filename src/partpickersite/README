@@ -1,0 +1,19 @@
+Partpickersite
+
+The testing has been done with parts 2, 408 409 and 410 to see how the program would react to different formatting of the locations.
+
+Overview: The part picker site uses the javascript datatables and jquery libraries
+
+The site loads a table with all of the data from the parts table database. The user then selects the parts from the table and the parts are added to the checkout table
+When the user clicks the find items button the part numbers from the checkout table are sent to the socket server which will turn on the neopixels
+An ajax request is sent to the server with the selected parts and the server checks the currently lit neopixels to find a color associated with the lit pixels if any of the ones you selected have already been lit.
+The server will also pick a new color for the parts you selected that haven't already been lit. This color should not match any of the colors of the currently lit leds.
+There are currently 10 colors right now which may cause an issue in the future if there are more than 10 users looking at the same time.
+The colors, the location of the neopixels, and a 15 minute timeout are logged to the leds database
+The web server views script also takes the already lit colors, the user's new color, and the part numbers of the leds and formats them to send to the browser.
+The colors are converted into hexadecimal to save character space. This message with the part numbers and colors is added to the url and the user is redirected to that page.
+The web server takes this url and parses it back into a dictionary of all the information needed to load the map. The Racks table is queried using the part numbers at the end of the url
+This saves space so you do not have to include the entire row of information from the database. in the url, just the part number.
+Using javascript canvas the map is drawn and an objects for each led is drawn in their individual locations. When each part is selected in the table next to the map
+the associated leds will blink. when they are deselected they stop blinking. When the found parts button is clicked the selected parts will disappear from the screen and the table.
+A post request is sent to the server to remove the user from that led row in the leds table and the If no other user is looking for that part the led will also turn off.

@@ -12,31 +12,30 @@ def respond_start(message):
     arguments = message[1:]
     if message[0] == "find" or message[0] == "reset":
         os.chdir(this_dir)
-        arduino_addresses = ["#", "192.168.10.58", "192.168.10.76", "192.168.10.4"]
+        pico_addresses = ["10.12.32.106", "10.12.32.107", "192.168.10.76", "192.168.10.4"]
         my_part_list = {}
         # TODO get part list for all arduino IP
-        our_parts = readPartNumbers.find_my_parts(arduino_addresses,
+        our_parts = readPartNumbers.find_my_parts(pico_addresses,
                                                   path_to_client=this_dir)
-        for arduino_address in our_parts:
-            my_part_list[arduino_address] = []
-            for item in our_parts[arduino_address]:
-                # TODO reconfigure find parts
+        for pico_address in our_parts:
+            my_part_list[pico_address] = []
+            for item in our_parts[pico_address]:
                 line_num = item[3]
                 part_location = item[2]
-                my_part_list[arduino_address].append([part_location, line_num])
+                my_part_list[pico_address].append([part_location, line_num])
 
         if message[0] == "find":
             line_number = arguments[0]
             try:
                 color = arguments[1]
             except IndexError:
-                print("No color was specified, or the command was not entered properly")  # Add error exception, maybe
+                print("No color was specified, or the command was not entered properly")
                 return
-                # index error, list out of range
 
             leds = {}
             update_leds = []
             add_leds = []
+            update_timeout = []
             led_dict = {
                 'red': '255/0/0',
                 'green': '0/255/0',
@@ -81,8 +80,7 @@ def respond_start(message):
                                     if location in part_location:
 
                                         if int(r) != 0 or int(g) != 0 or int(b) != 0:
-                                            # TODO update the timeout of that led
-                                            pass
+                                            update_timeout.append([location])
                                         else:
                                             if bool(leds.get(key)):
                                                 leds[key].append([color,
@@ -92,6 +90,7 @@ def respond_start(message):
                                                 leds[key] = [[color, location]]
                                                 update_leds.append([color_string,
                                                                     location])
+                            # location isnt defined yet
                             for part_location in my_part_list[key][i][0]:
                                 if any(part_location in x for x in current_leds):
                                     break
@@ -102,20 +101,24 @@ def respond_start(message):
 
                                         # locations equal
                                     else:
-                                        leds[key] = [[color, location]]
+                                        leds[key] = [[color, part_location]]
                                         add_leds.append([color, part_location])
-
             if update_leds:
                 print("Updating leds")
-                partpicker_database.write_to_table("leds", update_leds, False)
+                partpicker_database.write_to_table("leds", update_leds, 0)
             if add_leds:
                 print("Adding Leds")
-                partpicker_database.write_to_table("leds", add_leds, True)
-
-            for key in leds:
-                for i, item in enumerate(leds[key]):
-                    location_index = item[1].split('-')[1]
-                    leds[key][i][1] = location_index
+                partpicker_database.write_to_table("leds", add_leds, 1)
+            if update_timeout:
+                print("Updating led timeout")
+                partpicker_database.write_to_table("leds", update_timeout, 2)
+            try:
+                for key in leds:
+                    for i, item in enumerate(leds[key]):
+                        location_index = item[1].split('-')[1]
+                        leds[key][i][1] = location_index
+            except IndexError:
+                print('Error in location naming')
             send_msg(leds)
 
         if message[0] == "reset":
@@ -142,21 +145,29 @@ def respond_start(message):
 
 def send_msg(msg):  # This connects to the arduino and separates the color from the rack index with a '-' and each
     # color/index combo is separated by '|'
-    print("Sending ", msg, " to arduino....")
+    print("Sending ", msg, " to Picos....")
     for key in msg:
         for i, item in enumerate(msg[key]):
             msg[key][i] = '-'.join(item)
         msg[key] = '|'.join(msg[key])
     for key in msg:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            out = (msg[key] + '!').encode('utf-8')  # Add -!- to message to signify end of message for arduino
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        out = msg[key].encode('utf-8')  # Add -!- to message to signify end of message for arduino
+        try:
+            s.settimeout(2)
+            s.connect((key, 3706))  # change to address of arduino
+            s.settimeout(None)
+            print("Connected to " + key)
+            s.sendall(out)
+            s.settimeout(1)
             try:
-                s.settimeout(2)
-                s.connect((key, 3706))  # change to address of arduino
+                recieved = s.recv(1024).decode('utf-8')
                 s.settimeout(None)
-                print("Connected to " + key)
-                s.sendall(out)
-                s.shutdown(0)
-                s.close()
             except socket.timeout as error:
-                print("Could not connect to " + key, "(" + str(error) + ")")
+                # recieving timed out
+                pass
+            s.shutdown(0)
+            s.close()
+
+        except socket.timeout as error:
+            print("Could not connect to " + key, "(" + str(error) + ")")

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    {% load static %}
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'js/DataTables/datatables.min.js' %}"></script>
+    <link href="{% static 'js/Datatables/datatables.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/stylesheet.css' %}" rel="stylesheet" type="text/css">
+    <script src="{% static 'js/onPageLoad.js' %}"></script>
+    {% csrf_token %}
+</head>
+<body>
+<div class="table_windows">
+    <table>
+        <td>
+    <div class="main_table">
+        <table id="racks_table" class="display">
+            <thead>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+        </td>
+        <td>
+    <div class="checkout_window">
+        <table id="checkout_table" class="display:show">
+            <thead>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+        </td>
+    </table>
+</div>
+</body>
+</html>
